@@ -3,11 +3,13 @@ from random import randint
 class bolinha():
     v = 1
     d = 20
+    le = 0
+    ld = 800
     
-    def __init__(self, x, y,limite):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.novolimite(limite)
+  
         
     def novolimite(self, limite):
         self.le = limite.xe
@@ -39,8 +41,26 @@ class limite():
         line(self.xe,self.y,self.xd,self.y)
 
 class plataforma():
-    limites = []
+    limites = [limite(350,450,0)]
+    dir = 1
+    tam = 0
     
+    def addLimite(self):
+        u = self.limites[-1]
+        xe = u.xe + self.dir
+        xd = u.xd + self.dir
+        self.limites.append(limite(xe,xd, 0))
+        self.tam -= 1
+            
+        if self.tam <= 0:
+            self.tam = randint(50,150)
+            self.dir *= -1
+            
+        if len(self.limites) > 600:
+            del self.limites[0]
+    
+    '''
+    antigo metodo construtor
     def __init__(self,xe,xd):
         dir = -1
         tam = 0
@@ -53,17 +73,18 @@ class plataforma():
             if tam <= 0:
                 tam = randint(50,150)
                 dir *= -1
+                '''
             
     def desenha(self):
+        self.addLimite()
         for l in self.limites:
             l.y += 1
             if l.y == b.y:
-                b.le = l.xe
-                b.ld = l.xd
+                b.novolimite(l)
             l.desenha()
 
-p = plataforma(300,450)
-b = bolinha(400,500, plataforma.limites[500])
+p = plataforma()
+b = bolinha(400,500)
 
 def setup():
     size(800,600)
